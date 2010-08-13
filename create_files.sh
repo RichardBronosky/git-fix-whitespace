@@ -1,0 +1,1 @@
+rm *.txt; c=0; while [[ $((c++)) -lt 20 ]]; do ls -la | gawk 'BEGIN{srand();};{r=rand();n=0;if(r<0.5 && r>=0.1){n=sprintf("%i", r*10)}; printf "%"n"s%s\n","",$0}' > $(printf '%04d' $c).txt; echo $c; sleep 2; done

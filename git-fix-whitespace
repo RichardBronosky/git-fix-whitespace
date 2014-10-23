@@ -4,10 +4,10 @@ cat << EOF
 git-fix-whitespace - Fixes the whitespace issues that 'git-diff --check' complains about.
 Usage:
     $0 --cached
-    $0 tree-ish tree-ish
+    $0 tree-ish tree-ish [arguments to git-diff]
 Synopsis:
     In its first form the index is modified to correct the whitespace issues found in the files added to the index.
-    In its second form the index is modified to correct the whitespace issues found in the files that changed between the 2 hashes given.
+    In its second form the index is modified to correct the whitespace issues found in the files that changed between the 2 hashes given. Optionally you can provide additional arguments that get passed on to git-diff, useful to apply the whitespace fixes only to certain files.
 
 Notes:
  1. In git terminology "tree-sh" refers to anything that can be resolved to a tree, including a hash, tag, branch, or something like HEAD~3 (meaning 3 commits prior to HEAD).
@@ -31,18 +31,20 @@ err_files(){
     git diff $ARG1 $ARG2 --check | sed -E '/^(\+|-)/d;s/:.*//' | sort | uniq
 }
 
-PATCH=$(mktemp ${0##*/}.patch.XXXXXX)
 if [[ $# == 1 && "$1" == "--cached" ]]; then
     ARG1=$1
     ARG2=HEAD
-elif [[ $# == 2 ]]; then
+	shift
+elif [[ $# -ge 2 ]]; then
     ARG1=$1
     ARG2=$2
+	shift 2
 else
     usage
     exit
 fi
-git diff $ARG1 $ARG2 > $PATCH
+PATCH=$(mktemp ${0##*/}.patch.XXXXXX)
+git diff $ARG1 $ARG2 $@ > $PATCH
 FILES=$(sed '/^+++ /!d;s?^+++ b/??' $PATCH)
 echo -e "Files in index with whitespace errors:\n$(err_files 1)"
 git apply --whitespace=fix -R $PATCH || apply_fail 1

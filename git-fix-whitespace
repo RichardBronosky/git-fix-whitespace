@@ -1,17 +1,27 @@
 #!/bin/bash
-usage(){
-cat << EOF
-git-fix-whitespace - Fixes the whitespace issues that 'git-diff --check' complains about.
+usage() {
+    me="$(basename $0)"
+    cat << EOF
+git-fix-whitespace - Fixes the whitespace issues that 'git-diff --check'
+                     complains about.
 Usage:
-    $0 --cached
-    $0 tree-ish tree-ish
+    $me --cached
+    $me tree-ish tree-ish
+
 Synopsis:
-    In its first form the index is modified to correct the whitespace issues found in the files added to the index.
-    In its second form the index is modified to correct the whitespace issues found in the files that changed between the 2 hashes given.
+    In its first form the index is modified to correct the whitespace issues
+    found in the files added to the index.
+
+    In its second form the index is modified to correct the whitespace issues
+    found in the files that changed between the 2 hashes given.
 
 Notes:
- 1. In git terminology "tree-sh" refers to anything that can be resolved to a tree, including a hash, tag, branch, or something like HEAD~3 (meaning 3 commits prior to HEAD).
- 2. This script does not use perl/awk/sed/etc. to do is modifications. It uses git's own functionality. For this reason it should be very future-proof.
+  1. In git terminology "tree-sh" refers to anything that can be resolved to a
+     tree, including a hash, tag, branch, or something like HEAD~3 (meaning 3
+     commits prior to HEAD).
+
+  2. This script does not use perl/awk/sed/etc. to do is modifications. It uses
+     git's own functionality. For this reason it should be very future-proof.
 
 Acknowledgments:
     Copyright (c) 2010 Richard Bronosky
@@ -19,11 +29,14 @@ Acknowledgments:
     http://www.opensource.org/licenses/mit-license.php
     Created while employed by CMGdigital
 EOF
+exit
 }
 
 apply_fail(){
     echo "Failed to apply patch $PATCH"
-    echo "Perhaps you tried to do a hash comparison with uncommitted changes in your working tree."
+    echo
+    echo "Perhaps you tried to do a hash comparison with uncommitted changes in your"
+    echo "working tree."
     exit $1
 }
 

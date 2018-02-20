@@ -74,7 +74,7 @@ case "$#" in
         ;;
 esac
 
-PATCH=$(mktemp -p $(pwd -P) ${me}.patch.XXXXXX)
+PATCH=$(mktemp $(pwd -P)/${me}.patch.XXXXXX)
 git diff $ARG1 $ARG2 > $PATCH
 FILES=$(sed '/^+++ /!d;s?^+++ b/??' $PATCH)
 echo -e "Files in index with whitespace errors:\n$(err_files 1)"
